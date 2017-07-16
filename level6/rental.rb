@@ -4,7 +4,8 @@ require "./action.rb"
 
 class Rental
 
-  attr_reader :cars, :rentals
+  attr_reader :id, :car, :deductible_reduction
+  attr_accessor :start_date, :end_date, :distance, :actions
 
   def initialize(id, car, deductible_reduction, start_date, end_date, distance)
     @id = id
@@ -20,7 +21,6 @@ class Rental
     {id: @id, actions: generate_actions}
   end
 
-  private
   # apply the accurate discounted price to each day and sum them
   def calculate_price(price_per_day, number_of_days)
     (1..number_of_days).to_a.map do |day|
@@ -61,11 +61,13 @@ class Rental
 
   def generate_actions
     commissions = Commission.new(total_price, get_days)
-    @actions << Action.new('driver', 'debit',  total_price + deductible_reduction).to_hash
-    @actions << Action.new('owner', 'credit',  total_price - commissions.commission_amount).to_hash
-    @actions << Action.new('insurance', 'credit',  commissions.insurance_fee).to_hash
-    @actions << Action.new('assistance', 'credit',  commissions.assistance_fee).to_hash
-    @actions << Action.new('drivy', 'credit',  deductible_reduction + commissions.drivy_fee).to_hash
+    @actions = [
+      Action.new('driver', 'debit',  total_price + deductible_reduction).to_hash,
+      Action.new('owner', 'credit',  total_price - commissions.commission_amount).to_hash,
+      Action.new('insurance', 'credit',  commissions.insurance_fee).to_hash,
+      Action.new('assistance', 'credit',  commissions.assistance_fee).to_hash,
+      Action.new('drivy', 'credit',  deductible_reduction + commissions.drivy_fee).to_hash
+    ]
   end
 
 end
