@@ -38,7 +38,7 @@ class Drivy
   end
 
   def generate_rental_modifications
-    {rental_modifications: @rental_modifications.map { |rental| rental }}
+    {rental_modifications: @rental_modifications}
   end
 
 end
