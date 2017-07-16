@@ -1,6 +1,6 @@
-require "./commission.rb"
-require "./rental_options.rb"
-require "./action.rb"
+require_relative "./commission.rb"
+require_relative "./rental_options.rb"
+require_relative "./action.rb"
 
 class Rental
 

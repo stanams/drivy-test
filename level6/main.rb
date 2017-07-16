@@ -1,8 +1,8 @@
 require "json"
 require "date"
-require "./rental"
-require "./car"
-require "./rental_modification"
+require_relative "models/rental"
+require_relative "models/car"
+require_relative "models/rental_modification"
 
 class Drivy
   attr_reader :cars, :rentals
