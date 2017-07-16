@@ -2,8 +2,6 @@ require "json"
 require "date"
 require "./commission.rb"
 
-data = File.read('data.json')
-
 class Drivy
 
   attr_reader :cars, :rentals
@@ -62,7 +60,7 @@ class Drivy
   end
 end
 
-
+data = File.read('data.json')
 rentals = JSON.parse(data)["rentals"]
 cars = JSON.parse(data)["cars"]
 puts JSON.pretty_generate(Drivy.new(rentals, cars).calculate_prices)
