@@ -4,8 +4,7 @@ require_relative "./action.rb"
 
 class Rental
 
-  attr_reader :id, :car, :deductible_reduction
-  attr_accessor :start_date, :end_date, :distance, :actions
+  attr_reader :id, :car, :deductible_reduction, :start_date, :end_date, :distance, :actions
 
   def initialize(id, car, deductible_reduction, start_date, end_date, distance)
     @id = id

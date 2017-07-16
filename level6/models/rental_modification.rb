@@ -1,6 +1,6 @@
 class RentalModification
 
-  attr_reader :id, :rental, :rental_id
+  attr_reader :old_rental, :rental_modifications
 
   def initialize(old_rental, rental_modifications)
     @old_rental = old_rental
@@ -42,12 +42,11 @@ class RentalModification
       else
         new_action_hash = {
           who: new_action_hash[:who],
-          type: new_action_hash[:type] == "credit" ? "credit" : "debit",
+          type: new_action_hash[:type],
           amount: new_action_hash[:amount] - @old_rental.generate_actions[i][:amount]
         }
       end
     end
-    # puts generate_new_actions
   end
 
   def new_start_date
