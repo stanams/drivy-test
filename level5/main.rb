@@ -4,7 +4,7 @@ require "./rental"
 require "./car"
 
 class Drivy
-  attr_reader :cars, :rentals
+  attr_reader :data
 
   def initialize(data)
     @data = JSON.parse(data)

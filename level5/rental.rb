@@ -5,6 +5,7 @@ require "./action.rb"
 class Rental
 
   attr_reader :id, :car, :deductible_reduction, :start_date, :end_date, :distance
+  attr_accessor :actions
 
   def initialize(id, car, deductible_reduction, start_date, end_date, distance)
     @id = id

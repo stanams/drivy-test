@@ -5,7 +5,7 @@ require_relative "models/car"
 require_relative "models/rental_modification"
 
 class Drivy
-  attr_reader :cars, :rentals
+  attr_reader :data
 
   def initialize(data)
     @data = JSON.parse(data)

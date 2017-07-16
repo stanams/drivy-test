@@ -3,7 +3,7 @@ class Commission
   INSURANCE_FEE = 0.5
   ASSISTANCE = 100
 
-  attr_reader :amount, :days
+  attr_reader :rental_price, :days
 
   def initialize(rental_price, days)
     @rental_price = rental_price
