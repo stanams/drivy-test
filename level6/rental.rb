@@ -44,11 +44,11 @@ class Rental
   end
 
   def epoch_price
-    calculate_price(@car.price_per_day, get_days)
+    (calculate_price(@car.price_per_day, get_days)).to_i
   end
 
   def distance_price
-    @car.price_per_km * @distance
+    (@car.price_per_km * @distance).to_i
   end
 
   def total_price

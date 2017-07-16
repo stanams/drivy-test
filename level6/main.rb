@@ -34,14 +34,14 @@ class Drivy
   end
 
   def generate_rentals
-    {rentals: @rentals.map { |rental| rental.to_hash }}.to_json
+    {rentals: @rentals.map { |rental| rental.to_hash }}
   end
 
   def generate_rental_modifications
-    {rental_modifications: @rental_modifications.map { |rental| rental }}.to_json
+    {rental_modifications: @rental_modifications.map { |rental| rental }}
   end
 
 end
 
 data = File.read('data.json')
-puts Drivy.new(data).generate_rental_modifications
+puts JSON.pretty_generate(Drivy.new(data).generate_rental_modifications)

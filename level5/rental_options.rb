@@ -1,19 +1,19 @@
 class RentalOptions
-
   DEDUCTIBLE_AMOUNT = 400
 
-  def initialize(days, has_subscribe_to_deductible)
+  attr_reader :days, :has_subscribe_to_deductible_reduction
+  def initialize(days, has_subscribe_to_deductible_reduction)
     @days = days
-    @has_subscribe_to_deductible = has_subscribe_to_deductible
+    @has_subscribe_to_deductible_reduction = has_subscribe_to_deductible_reduction
   end
 
   def calculate
-    @has_subscribe_to_deductible ? @days * DEDUCTIBLE_AMOUNT : 0
+    @has_subscribe_to_deductible_reduction ? @days * DEDUCTIBLE_AMOUNT : 0
   end
 
   def generate
     {
-      "deductible_reduction": @has_subscribe_to_deductible ? @days * DEDUCTIBLE_AMOUNT : 0
+      "deductible_reduction": calculate.to_i
     }
   end
 

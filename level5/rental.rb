@@ -1,41 +1,28 @@
+require "./commission.rb"
+require "./rental_options.rb"
+require "./action.rb"
+
 class Rental
 
-  attr_reader :cars, :rentals
-  attr_accessor :output
+  attr_reader :id, :car, :deductible_reduction
+  attr_accessor :start_date, :end_date, :distance
 
-  def initialize(rentals, cars, deductible_reduction, actions, output = {})
-    @rentals = rentals
-    @cars = cars
+  def initialize(id, car, deductible_reduction, start_date, end_date, distance)
+    @id = id
+    @car = car
     @deductible_reduction = deductible_reduction
+    @start_date = start_date
+    @end_date = end_date
+    @distance = distance
     @actions = []
-    @output = output
   end
 
-  def calculate_prices
-    @output["rentals"] = []
-
-    @rentals.each_with_index do |rental, i|
-      item = {}
-
-      number_of_days = (Date.parse(rental["end_date"]) - Date.parse(rental["start_date"]) + 1).to_i
-      selected_car = @cars.find { |car| car["id"] == rental["car_id"]  }
-
-      epoch_price = discount_price(selected_car["price_per_day"], number_of_days)
-      distance_price = selected_car["price_per_km"] * rental["distance"]
-
-      total_price = epoch_price + distance_price
-
-      item["id"] = i + 1
-      deductible_reduction = RentalOptions.new(number_of_days, rental["deductible_reduction"]).calculate
-
-      item["actions"] = generate_actions(total_price, deductible_reduction, number_of_days)
-      @output["rentals"] << item
-    end
-
+  def to_hash
+    {id: @id, actions: generate_actions}
   end
 
   # apply the accurate discounted price to each day and sum them
-  def discount_price(price_per_day, number_of_days)
+  def calculate_price(price_per_day, number_of_days)
     (1..number_of_days).to_a.map do |day|
        case day
        when 1
@@ -52,14 +39,35 @@ class Rental
     end
   end
 
-  def generate_actions(total_price, deductible_reduction, days)
-    commissions = Commission.new(total_price, days)
-    @actions << Actions.new('driver', 'debit',  total_price + deductible_reduction)
-    @actions << Actions.new('owner', 'credit',  total_price - deductible_reduction - commissions.commission_amount)
-    @actions << Actions.new('insurance', 'credit',  commissions.insurance_fee)
-    @actions << Actions.new('assistance', 'credit',  commissions.assistance_fee)
-    @actions << Actions.new('drivy', 'credit',  commissions.insurance_fee)
+  def get_days
+    (Date.parse(@end_date) - Date.parse(@start_date)).to_i + 1
+  end
 
+  def epoch_price
+    calculate_price(@car.price_per_day, get_days).to_i
+  end
+
+  def distance_price
+    (@car.price_per_km * @distance).to_i
+  end
+
+  def total_price
+    (epoch_price + distance_price).to_i
+  end
+
+  def deductible_reduction
+    RentalOptions.new(get_days, @deductible_reduction).calculate
+  end
+
+  def generate_actions
+    commissions = Commission.new(total_price, get_days)
+    @actions = [
+      Action.new('driver', 'debit',  total_price + deductible_reduction).to_hash,
+      Action.new('owner', 'credit',  total_price - commissions.commission_amount).to_hash,
+      Action.new('insurance', 'credit',  commissions.insurance_fee).to_hash,
+      Action.new('assistance', 'credit',  commissions.assistance_fee).to_hash,
+      Action.new('drivy', 'credit',  deductible_reduction + commissions.drivy_fee).to_hash
+    ]
   end
 
 end

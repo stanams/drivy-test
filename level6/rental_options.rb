@@ -13,7 +13,7 @@ class RentalOptions
 
   def generate
     {
-      "deductible_reduction": calculate
+      "deductible_reduction": calculate.to_i
     }
   end
 

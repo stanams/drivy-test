@@ -28,34 +28,35 @@ class Drivy
       total_price = epoch_price + distance_price
 
       item["id"] = i + 1
-      item["price"] = total_price
+      item["price"] = total_price.to_i
 
       rentals_list << item
     end
 
     output["rentals"] = rentals_list
+    output
   end
 
+  # apply the accurate discounted price to each day and sum them
   def discount_price(price_per_day, number_of_days)
-    price_after_one_day_discount = 0.9 * price_per_day
-    price_after_four_days_discount = 0.7 * price_per_day
-    price_after_ten_days_discount = 0.5 * price_per_day
-
-    if (2...4).include?(number_of_days)
-      discounted_price = 0.9 * price_per_day
-      return price_per_day + discounted_price * (number_of_days - 1)
-    elsif (4..10).include?(number_of_days)
-      discounted_price = 0.7 * price_per_day
-      return price_per_day + price_after_one_day_discount * 3 + discounted_price * (number_of_days - 4)
-    elsif (number_of_days > 10)
-      discounted_price = 0.5 * price_per_day
-      return price_per_day + price_after_one_day_discount * 3 + price_after_four_days_discount * 6 + discounted_price * (number_of_days - 10)
-    else
-      return price_per_day * number_of_days
+    (1..number_of_days).to_a.map do |day|
+       case day
+       when 1
+         1
+       when (2..4)
+         0.9
+       when (4..10)
+         0.7
+       else
+         0.5
+       end
+     end.inject(0) do |result, val|
+      result + price_per_day * val
     end
   end
+
 end
 
 rentals = JSON.parse(data)["rentals"]
 cars = JSON.parse(data)["cars"]
-puts Drivy.new(rentals, cars).calculate_prices
+puts JSON.pretty_generate(Drivy.new(rentals, cars).calculate_prices)

@@ -31,7 +31,7 @@ class Drivy
       total_price = epoch_price + distance_price
 
       item["id"] = i + 1
-      item["price"] = total_price
+      item["price"] = total_price.to_i
 
       item["commission"] = Commission.new(total_price, number_of_days).distribute_commission_fees
 
@@ -39,6 +39,7 @@ class Drivy
     end
 
     @output["rentals"] = rentals_list
+    @output
 
   end
 
@@ -64,4 +65,4 @@ end
 
 rentals = JSON.parse(data)["rentals"]
 cars = JSON.parse(data)["cars"]
-puts Drivy.new(rentals, cars).calculate_prices
+puts JSON.pretty_generate(Drivy.new(rentals, cars).calculate_prices)

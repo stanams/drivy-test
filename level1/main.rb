@@ -21,9 +21,10 @@ rentals.each_with_index do |rental, i|
   total_price = price_per_km + price_per_day
 
   item["id"] = i + 1
-  item["price"] = total_price
+  item["price"] = total_price.to_i
 
   rentals_list << item
 end
 
 output["rentals"] = rentals_list
+puts JSON.pretty_generate(output)

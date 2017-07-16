@@ -32,15 +32,16 @@ class Drivy
       total_price = epoch_price + distance_price
 
       item["id"] = i + 1
-      item["price"] = total_price
+      item["price"] = total_price.to_i
+      item["options"] = RentalOptions.new(number_of_days, rental["deductible_reduction"]).to_json
+
       item["commission"] = Commission.new(total_price, number_of_days).distribute_commission_fees
-      item["options"] = RentalOptions.new(number_of_days, rental["deductible_reduction"]).calculate
 
       rentals_list << item
     end
 
     @output["rentals"] = rentals_list
-
+    @output
   end
 
   # apply the accurate discounted price to each day and sum them
@@ -65,4 +66,4 @@ end
 
 rentals = JSON.parse(data)["rentals"]
 cars = JSON.parse(data)["cars"]
-puts Drivy.new(rentals, cars).calculate_prices
+puts JSON.pretty_generate(Drivy.new(rentals, cars).calculate_prices)

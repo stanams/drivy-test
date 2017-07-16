@@ -8,8 +8,12 @@ class RentalOptions
   end
 
   def calculate
+    @has_subscribe_to_deductible ? @days * DEDUCTIBLE_AMOUNT : 0
+  end
+
+  def to_json
     {
-      "deductible_reduction": @has_subscribe_to_deductible ? @days * DEDUCTIBLE_AMOUNT : 0
+      "deductible_reduction": calculate.to_i
     }
   end
 

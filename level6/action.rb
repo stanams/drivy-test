@@ -7,7 +7,7 @@ class Action
   end
 
   def to_hash
-    {who: @who, type: @type, amount: @amount}
+    {who: @who, type: @type, amount: @amount.to_i}
   end
 
 end
